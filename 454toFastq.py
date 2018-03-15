@@ -15,7 +15,6 @@ def delspace(x):
 
 basefile = sys.argv[1]
 c = 0
-h = ''
 seqc = {}
 quac = {}
 with gzip.open(basefile+".fastq.gz","w") as fqgz:
