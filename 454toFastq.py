@@ -1,13 +1,7 @@
 
 import sys
 import gzip
-
-def keyisfound(x, key):
-    try:
-        x[key]
-        return True
-    except KeyError:
-        return False
+from itertools import izip
 
 def delspace(x):
     if ' ' in x:
@@ -21,15 +15,17 @@ def delspace(x):
 
 basefile = sys.argv[1]
 c = 0
+h = ''
 seqc = {}
 quac = {}
-h = ''
 with gzip.open(basefile+".fastq.gz","w") as fqgz:
-    with open(basefile+".fna") as fasta, open(basefile+".qual") as qual:
-        for f,q in zip(fasta,qual):
+    with open(basefile+".fna","r") as fasta, open(basefile+".qual","r") as qual:
+        for f,q in izip(fasta,qual):
             if ">" in f and ">" in q:
-                if keyisfound(seqc, h) and keyisfound(quac, h):
+                if seqc.get(h) and quac.get(h):
                     fqgz.write(seqc[h] + "\n+\n" + quac[h] + "\n")
+                    del seqc[h]
+                    del quac[h]
                     c += 1
                     sys.stdout.write(" {:<17s}done for {} reads\r".format("[454toFastq.py]",c)),
                     sys.stdout.flush()
