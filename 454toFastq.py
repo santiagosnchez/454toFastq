@@ -43,7 +43,6 @@ with gzip.open(basefile+".fastq.gz","w") as fqgz:
                 seqc[h] += f.rstrip()
                 q = delspace(q.rstrip().split(" "))
                 quac[h] += ''.join(map(lambda i: chr(int(i)+33), q))
+    # this should write the last read
     fqgz.write(seqc[h] + "\n+\n" + quac[h] + "\n")
-
-
 print ''
