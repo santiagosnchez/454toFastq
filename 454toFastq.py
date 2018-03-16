@@ -1,5 +1,6 @@
 
 import sys
+import os
 import gzip
 from itertools import izip
 
@@ -19,6 +20,7 @@ seqc = {}
 quac = {}
 with gzip.open(basefile+".fastq.gz","w") as fqgz:
     with open(basefile+".fna","r") as fasta, open(basefile+".qual","r") as qual:
+        fsize = os.fstat(fasta.fileno()).st_size
         for f,q in izip(fasta,qual):
             if ">" in f and ">" in q:
                 if seqc.get(h) and quac.get(h):
@@ -41,4 +43,7 @@ with gzip.open(basefile+".fastq.gz","w") as fqgz:
                 seqc[h] += f.rstrip()
                 q = delspace(q.rstrip().split(" "))
                 quac[h] += ''.join(map(lambda i: chr(int(i)+33), q))
+    fqgz.write(seqc[h] + "\n+\n" + quac[h] + "\n")
+
+
 print ''
